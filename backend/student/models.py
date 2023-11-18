@@ -21,7 +21,7 @@ class Student(models.Model):
 class CoursePayment(models.Model):
     studentId = models.ForeignKey(Student, on_delete=models.CASCADE)
     structId = models.ForeignKey(CourseStructure, on_delete=models.CASCADE)
-    tutorId = models.ForeignKey(Tutor, on_delete=models.CASCADE)
+    tutorId = models.ForeignKey(Tutor, on_delete=models.CASCADE,limit_choices_to={'students__lt': 25})
     razorpayId = models.CharField( max_length=250)
 
 class MyNotes(models.Model):

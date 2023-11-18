@@ -34,3 +34,32 @@ class AdminLoginView(APIView):
             
         except:
             return Response({'message':'user not found'})
+        
+class Totalcount(APIView):
+    def post(self,request):
+
+        stdobj = Student.objects.all()
+        tutorobj = Tutor.objects.all()
+        courseobj = Course.objects.all()
+        tutorupload = VideoUpload.objects.all()
+        stdupload = TaskUpload.objects.all()
+        taskobj = ActivityAssign.objects.all()
+        feedbackobj = Feedbacks.objects.all()
+
+        tutorUploadcount = tutorupload.count()
+        stdUploadcount = stdupload.count()
+        taskCount = taskobj.count()
+        stdCount = stdobj.count()
+        tutorCount = tutorobj.count()
+        courseCount = courseobj.count() 
+        feedbackCount = feedbackobj.count()
+
+        return Response({"stdCount":stdCount,"tutorCount":tutorCount,"courseCount":courseCount,"stdUploadcount":stdUploadcount,"tutorUploadcount":tutorUploadcount,"taskCount":taskCount,"feedbackCount":feedbackCount})
+    
+class TutorUploads(APIView):
+    def post(self,request):
+        tutorupload = VideoUpload.objects.all()
+        serialized = VideoUploadSerializer(tutorupload,many=True)
+
+        return Response(serialized.data)
+
