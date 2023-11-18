@@ -402,6 +402,16 @@ class GetTaskView(APIView):
         serialized = ActivityAssignSerializer(taskobj)
         return Response(serialized.data)
     
+class AddCourseView(APIView):
+    def post(self,request):
+        title = request.data.get("title")
+        description = request.data.get("description")
+
+        print(title,description,"*********")
+
+        Course.objects.create(title=title,description=description)
+
+        return Response({"message":"success"})
 
             
    
