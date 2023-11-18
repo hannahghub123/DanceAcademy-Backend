@@ -69,6 +69,8 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:3001",
+
+    "https://dance-academy-rho.vercel.app",
 ]
 
 EMAIL_HOST = 'smtp.gmail.com'
