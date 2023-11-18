@@ -28,3 +28,4 @@ class ResumeListSerializer(ModelSerializer):
     class Meta:
         model = ResumeList
         fields = '__all__'
+

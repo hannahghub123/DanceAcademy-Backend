@@ -21,4 +21,9 @@ urlpatterns = [
     path("course-structedit/",CourseStructEditView.as_view(),name="course-structedit"),
     path("courseImage-set/",CourseImageSetView.as_view(),name="courseImage-set"), 
     path("pay-details/",PayDetailsView.as_view(),name="pay-details"),
+    path("task-details/",TaskDetailsView.as_view(),name="task-details"),
+    path("task-edit/",TaskEditView.as_view(),name="task-edit"),
+    path("task-delete/",TaskDeleteView.as_view(),name="task-delete"),
+    path("get-task/",GetTaskView.as_view(),name="get-task"),
+
 ]

@@ -65,8 +65,8 @@ class StudentDetailsView(APIView):
         serialized = StudentSerializer(studentobj,many=True)
 
         return Response(serialized.data)
-            
-        
+    
+         
 class ImageSetView(APIView):
     def post(self, request):
         id=request.data.get("id")
@@ -136,6 +136,41 @@ class VideoListView(APIView):
 
 
         return Response({"message":"success","video_urls":video_urls})
+    
+class MyUploadsView(APIView):
+    def post(self,request):
+        tutor = request.data.get("id")
+
+        try:
+            tutorobj = Tutor.objects.get(id=tutor)
+
+            payments = CoursePayment.objects.filter(tutorId=tutorobj)
+        except Student.DoesNotExist:
+            return Response({"error":"Student not found"})
+        
+
+        task_urls = []
+
+        for payment in payments:
+            # Assuming there is a ForeignKey relationship from CoursePayment to Student
+            student = payment.studentId
+            tasks = TaskUpload.objects.filter(student=student)
+
+            for task in tasks:
+                task_urls.append({
+                    'id': task.id,
+                    'task_upload': task.task_upload.url,
+                    'up_time': task.up_time,
+                    'description': task.description,
+                     'student': {
+                                    'id': student.id,
+                                    'name': student.name,
+                                }
+                })
+
+        print(task_urls,"*************************")
+        return Response({"message":"success","task_urls":task_urls})
+
 
 
 class CoursePaymentView(APIView):
@@ -426,3 +461,93 @@ class CoursePayDetailsView(APIView):
         serialized = CoursePaymentSerializer(payobj,many=True)
 
         return Response({"paydata":serialized.data,"totalAmount":totalAmount})
+    
+
+class AddScoresFeedbacksView(APIView):
+    def post(self,request):
+        score = int(request.data.get("score"))
+        feedback = request.data.get("feedbacks")
+        student=request.data.get("student")
+        tutor = request.data.get("tutor")
+        upload = request.data.get("upload")
+
+        print(feedback,"%%%%%%\n",score,"%%%%%%\n",student,"%%%%%%\n",tutor,"%%%%%%\n",upload)
+
+        studentobj = Student.objects.get(id=student)
+        tutorobj = Tutor.objects.get(id=tutor)
+        uploadobj = TaskUpload.objects.get(id=upload)
+
+        if score:
+            stdobj = Student.objects.get(id=student)
+            stdobj.score += score
+            stdobj.save()
+
+        if feedback:
+            feedbackobj = Feedbacks.objects.create(feedback=feedback, student=studentobj, tutor=tutorobj, upload=uploadobj)
+            print(feedbackobj,"##########")
+        else:
+            print("no feedback recieved")
+
+   
+        return Response({"message":"success"})
+
+
+ 
+class FeedbackDetailsView(APIView):
+    def get(self,request):
+        feedbacks = Feedbacks.objects.all()
+        print(feedbacks,"???????????????????")
+        serialized = FeedbackSerializer(feedbacks,many=True)
+
+        return Response({"message":"success","data":serialized.data})
+    
+class FeedDetailsView(APIView):
+    def post(self, request):
+        studentid = request.data.get("id")  # Assuming you're passing student_id as a query parameter
+        feedbacks = Feedbacks.objects.filter(student_id=studentid)
+
+        stdobj = Student.objects.get(id=studentid)
+        
+        tutor_ids = feedbacks.values_list('tutor_id', flat=True).distinct()
+        tutors = Tutor.objects.filter(id__in=tutor_ids)
+        
+        tutor_serialized = TutorSerializer(tutors, many=True)
+        student_serialized = StudentSerializer(stdobj)
+        feedback_serialized = FeedbackSerializer(feedbacks, many=True)
+
+        return Response({"message": "success", "tutors": tutor_serialized.data, "feedbacks": feedback_serialized.data,"student":student_serialized.data})
+
+
+
+class GetFeedbackView(APIView):
+    def post(self,request):
+        id = request.data.get("id")
+
+        feedbackobj = Feedbacks.objects.get(id=id)
+
+        serialized = FeedbackSerializer(feedbackobj)
+
+        return Response(serialized.data)    
+
+class FeedbackEditview(APIView):
+    def post(self,request):
+        id = request.data.get("id")
+        feedback = request.data.get("feedback") 
+
+        feedobj = Feedbacks.objects.get(id=id)
+
+        feedobj.feedback = feedback
+        feedobj.save()
+
+        return Response({"message":"success"})
+    
+class FeedbackDeleteview(APIView):
+    def post(self,request):
+        id = request.data.get("id")
+
+        feedobj = Feedbacks.objects.get(id=id)
+
+        feedobj.delete()
+
+        return Response({"message":"deleted"})
+            

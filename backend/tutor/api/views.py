@@ -349,4 +349,59 @@ class PayDetailsView(APIView):
         serialized = CoursePaymentSerializer(payobj,many=True)
 
         return Response({"paydata":serialized.data,'totalCount':totalCount})
+    
 
+class TaskDetailsView(APIView):
+    def post(self, request):
+        tutor_id = request.data.get("tutor")
+
+        # Get all related SessionAssign objects for the given tutor_id
+        session_assign_objects = SessionAssign.objects.filter(tutor=tutor_id)
+
+        # Collect the ActivityAssign objects related to each SessionAssign object
+        task_objects = []
+        for session_obj in session_assign_objects:
+            task_objects.extend(ActivityAssign.objects.filter(session_assign=session_obj))
+
+        task_count = len(task_objects)
+
+        # Serialize the task objects
+        serialized = ActivityAssignSerializer(task_objects, many=True)
+
+        return Response({"message": "Hi, data of tasks", "data": serialized.data, "task_count": task_count})
+
+
+class TaskDeleteView(APIView):
+    def post(self,request):
+        id = request.data.get("id")
+
+        taskobj = ActivityAssign.objects.get(id=id)
+        taskobj.delete()
+
+        return Response({"message":"success"})
+    
+class TaskEditView(APIView):
+    def post(self,request):
+        id = request.data.get("id")
+        task = request.data.get("task")
+
+        taskobj = ActivityAssign.objects.get(id=id)
+        taskobj.task = task
+        taskobj.save()
+
+        return Response({"message":"success"})
+
+
+
+class GetTaskView(APIView):
+    def post(self,request):
+        id = request.data.get("id")
+
+        taskobj = ActivityAssign.objects.get(id=id)
+
+        serialized = ActivityAssignSerializer(taskobj)
+        return Response(serialized.data)
+    
+
+            
+   
