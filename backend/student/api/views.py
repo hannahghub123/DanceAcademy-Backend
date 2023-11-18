@@ -344,7 +344,7 @@ class SessionSendMailView(APIView):
         emailobj = sessionobj.student.email
 
         subject = "Session Link"
-        message = f"http://localhost:3000/zego?roomID={sessionobj.video_link}"
+        message = f"https://dance-academy-rho.vercel.app/zego?roomID={sessionobj.video_link}"
         recipient = emailobj
         send_mail(subject, 
             message, settings.EMAIL_HOST_USER, [recipient], fail_silently=False)
