@@ -63,15 +63,16 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:3001",
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     "http://localhost:3001",
 
-    "https://dance-academy-rho.vercel.app",
-]
+#     "https://dance-academy-rho.vercel.app",
+# ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
