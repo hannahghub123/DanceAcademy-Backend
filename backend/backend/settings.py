@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-$&q@ylxlejkm6=bpb&44060x65rqiy8zegcod10el@)q8-y!wc
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = False
-DEBUG = True 
+DEBUG = False 
 
 ALLOWED_HOSTS = ["*"]
 
@@ -66,14 +66,14 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:3001",
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     "http://localhost:3001",
 
-    "https://dance-academy-rho.vercel.app",
-]
+#     "https://dance-academy-rho.vercel.app",
+# ]
 
-# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
