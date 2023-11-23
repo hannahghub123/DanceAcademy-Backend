@@ -137,7 +137,7 @@ class VideoListView(APIView):
 
         return Response({"message":"success","video_urls":video_urls})
     
-class MyUploadsView(APIView):
+class StudentUploadsView(APIView):
     def post(self,request):
         tutor = request.data.get("id")
 
@@ -379,24 +379,29 @@ class TaskDetailsView(APIView):
     def post(self,request):
         student = request.data.get("id")
         print(student,"&&&")
-        sessionobj = SessionAssign.objects.get(student=student)
-        taskobj = ActivityAssign.objects.filter(session_assign=sessionobj)
-        print(sessionobj,"******",taskobj)
+        
+        try:
+            sessionobj = SessionAssign.objects.get(student=student)
+            taskobj = ActivityAssign.objects.filter(session_assign=sessionobj)
+            print(sessionobj,"******",taskobj)
 
-        taskCount = taskobj.count()
+            taskCount = taskobj.count()
 
-        completed_tasks = taskobj.filter(status="Completed")
-        completedCount = completed_tasks.count()
+            completed_tasks = taskobj.filter(status="Completed")
+            completedCount = completed_tasks.count()
 
-        pending_tasks = taskobj.filter( Q(status="Task Assigned") | Q(status="Pending"))
-        pendingCount = pending_tasks.count()
+            pending_tasks = taskobj.filter( Q(status="Task Assigned") | Q(status="Pending"))
+            pendingCount = pending_tasks.count()
 
-        serialized = ActivityAssignSerializer(taskobj,many=True)
-        task_serialized = ActivityAssignSerializer(completed_tasks,many=True)
-        pending_serialized = ActivityAssignSerializer(pending_tasks,many=True)
+            serialized = ActivityAssignSerializer(taskobj,many=True)
+            task_serialized = ActivityAssignSerializer(completed_tasks,many=True)
+            pending_serialized = ActivityAssignSerializer(pending_tasks,many=True)
 
-        return Response({"message":"hi data of tasks","data":serialized.data,"taskCount":taskCount,"completed_tasks":task_serialized.data,"completedCount":completedCount,'pendingTasks':pending_serialized.data,'pendingCount':pendingCount})
-    
+            return Response({"message":"hi data of tasks","data":serialized.data,"taskCount":taskCount,"completed_tasks":task_serialized.data,"completedCount":completedCount,'pendingTasks':pending_serialized.data,'pendingCount':pendingCount})
+        
+        except:
+            return Response({"message":"session not found"})
+        
 class ActivityDetailsView(APIView):
     def post(self,request):
         id = request.data.get("id")
@@ -551,3 +556,38 @@ class FeedbackDeleteview(APIView):
 
         return Response({"message":"deleted"})
             
+
+class MyUploadsView(APIView):
+     def post(self, request):
+        student_id = request.data.get("id")
+
+        student = Student.objects.get(id=student_id)
+
+        task_urls = []
+
+        tasks = TaskUpload.objects.filter(student=student)
+
+        for task in tasks:
+
+                activity_assign = task.task
+                task_urls.append({
+                    'id': task.id,
+                    'task_upload': task.task_upload.url,
+                    'up_time': task.up_time,
+                    'description': task.description,
+                    'student': {
+                        'id': student.id,
+                        'name': student.name,
+                    },
+                    'activity_assign': {
+                        'id': activity_assign.id,
+                        'task': activity_assign.task,
+                        'course':activity_assign.session_assign.course_struct.course.title,
+                        'course_struct':activity_assign.session_assign.course_struct.title,
+                        'status': activity_assign.status,
+                    }
+                })
+
+        print(task_urls, "*************************")
+        return Response({"message": "success", "task_urls": task_urls})
+

@@ -26,11 +26,12 @@ urlpatterns = [
     path("task-upload/",TaskUploadView.as_view(),name="task-upload"),
     path("courseStruct-details/",CourseStructDetailsView.as_view(),name="courseStructure-details"),
     path("coursepay-details/",CoursePayDetailsView.as_view(),name="coursepay-details"),
-    path("student-uploads/",MyUploadsView.as_view(),name="std-uploads"),
+    path("student-uploads/",StudentUploadsView.as_view(),name="std-uploads"),
     path("add-scores/",AddScoresFeedbacksView.as_view(),name="add-scores"),
     path("feedback-details/",FeedbackDetailsView.as_view(),name="feedback-details"),
     path("get-feedback/",GetFeedbackView.as_view(),name="get-feedbcak"),
     path("feedback-edit/",FeedbackEditview.as_view(),name="feedback-edit"),
     path("feedback-delete/",FeedbackDeleteview.as_view(),name="feedback-delete"),
     path("feed-details/",FeedDetailsView.as_view(),name="feed-details"),
+    path("my-uploads/",MyUploadsView.as_view(),name="my-uploads"),
 ]

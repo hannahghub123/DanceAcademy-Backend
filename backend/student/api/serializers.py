@@ -3,7 +3,7 @@ from student.models import *
 from tutor.api.serializers import *
 
 class StudentSerializer(ModelSerializer):
-    course = CourseSerializer() 
+    course = CourseSerializer(1) 
     class Meta:
         model = Student
         fields = "__all__"
@@ -37,7 +37,7 @@ class ActivityAssignSerializer(ModelSerializer):
         fields = "__all__"
 
 class TaskUploadSerializer(ModelSerializer):
-    student = StudentSerializer()
+    student = StudentSerializer(many=True)
     task = ActivityAssignSerializer()
     class Meta:
         model = TaskUpload
